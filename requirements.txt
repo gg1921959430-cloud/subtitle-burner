@@ -1,0 +1,8 @@
+# 无额外 Python 依赖，仅需系统安装 FFmpeg
+
+# 系统依赖：
+# - Python 3.8+
+# - FFmpeg（需支持 drawtext filter，编译时包含 libfreetype）
+#   安装方式（Windows）：scoop install ffmpeg 或 choco install ffmpeg
+#   安装方式（macOS）：brew install ffmpeg
+#   安装方式（Linux）：apt install ffmpeg 或 pacman -S ffmpeg
