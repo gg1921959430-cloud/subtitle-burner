@@ -220,21 +220,19 @@ def escape_drawtext(text: str) -> str:
     """
     转义 drawtext filter 中的特殊字符。
 
-    FFmpeg drawtext 中需要转义的字符：冒号:、反斜杠\、单引号'（在单引号包裹时）
-    这里将文本包裹在单引号中，内部单引号做转义处理。
+    **已废弃**：项目已改用 textfile= 方案（burner.py），每条字幕写入临时文件，
+    FFmpeg 从文件读取文本内容，完全绕过 filter 解析器的转义问题。
 
-    参考: ffmpeg drawtext text='...'
-    转义规则（单引号内）：
-        - 单引号 ' 替换为 '\''（结束单引号 → 转义单引号 → 重新开始单引号）
-        - 百分号 % 替换为 \\% （避免被解析为文本扩展）
-        - 冒号 : 替换为 \\: （避免被解析为参数分隔符）
+    保留此函数供参考或特殊场景需要内联 text= 时使用。
+
+    FFmpeg 内部解析器规则：
+        - 反斜杠 \\ → \\\\（必须最先转义，否则会转义后续插入的 \\）
+        - 百分号 % → \\%
+        - 冒号 : → \\:
+        - 单引号 ' → \\x27（FFmpeg 不支持 \\' 转义，必须用 hex escape）
     """
-    # 先转义反斜杠（必须最先）
     text = text.replace("\\", "\\\\")
-    # 转义百分号
     text = text.replace("%", "\\%")
-    # 转义冒号
     text = text.replace(":", "\\:")
-    # 转义单引号：结束当前引号，转义单引号，重新开始
-    text = text.replace("'", "'\\''")
+    text = text.replace("'", "\\x27")
     return text
